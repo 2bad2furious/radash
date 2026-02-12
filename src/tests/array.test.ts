@@ -1,4 +1,5 @@
 import { assert } from 'chai'
+import type { Equal, Expect } from 'type-testing'
 import * as _ from '..'
 
 const NULL = null as unknown as unknown[]
@@ -515,6 +516,53 @@ describe('array module', () => {
       const [b, m] = ys
       assert.equal(b.name, 'bo')
       assert.equal(m.name, 'mary')
+    })
+    test('types correctly for const list', () => {
+      const input = [
+        { name: 'ray', group: 'X' },
+        { name: 'sara', group: 'X' },
+        { name: 'bo', group: 'Y' },
+        { name: 'mary', group: 'Y' }
+      ] as const
+      type Item = typeof input[number]
+      const [xs, ys] = _.fork(
+        input,
+        (x): x is Extract<Item, { group: 'X' }> => x.group === 'X'
+      )
+
+      type _checkXs = Expect<
+        Equal<
+          typeof xs,
+          (
+            | { readonly name: 'ray'; readonly group: 'X' }
+            | { readonly name: 'sara'; readonly group: 'X' }
+          )[]
+        >
+      >
+      type _checkYs = Expect<
+        Equal<
+          typeof ys,
+          (
+            | { readonly name: 'bo'; readonly group: 'Y' }
+            | { readonly name: 'mary'; readonly group: 'Y' }
+          )[]
+        >
+      >
+    })
+    test('types correctly for const item parts', () => {
+      const input = [
+        { name: 'ray', group: 'X' as const },
+        { name: 'sara', group: 'X' as const },
+        { name: 'bo', group: 'Y' as const },
+        { name: 'mary', group: 'Y' as const }
+      ]
+      type Item = typeof input[number]
+      const [xs, ys] = _.fork(
+        input,
+        (x): x is Extract<Item, { group: 'X' }> => x.group === 'X'
+      )
+      type _checkXs = Expect<Equal<typeof xs, { name: string; group: 'X' }[]>>
+      type _checkYs = Expect<Equal<typeof ys, { name: string; group: 'Y' }[]>>
     })
   })
 

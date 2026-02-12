@@ -385,14 +385,22 @@ export const intersects = <T, K extends string | number | symbol>(
   return listA.some(value => dictB[ident(value)])
 }
 
+export function fork<T, R extends T>(
+  list: readonly T[],
+  condition: (item: T) => item is R
+): [(T & R)[], Exclude<T, R>[]]
+export function fork<T>(
+  list: readonly T[],
+  condition: (item: T) => boolean
+): [T[], T[]]
 /**
  * Split an array into two array based on
  * a true/false condition function
  */
-export const fork = <T>(
+export function fork<T>(
   list: readonly T[],
   condition: (item: T) => boolean
-): [T[], T[]] => {
+): [T[], T[]] {
   if (!list) return [[], []]
   return list.reduce(
     (acc, item) => {
