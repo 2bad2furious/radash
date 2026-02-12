@@ -233,7 +233,7 @@ const intersects = (listA, listB, identity) => {
   }, {});
   return listA.some((value) => dictB[ident(value)]);
 };
-const fork = (list2, condition) => {
+function fork(list2, condition) {
   if (!list2)
     return [[], []];
   return list2.reduce(
@@ -247,7 +247,7 @@ const fork = (list2, condition) => {
     },
     [[], []]
   );
-};
+}
 const merge = (root, others, matcher) => {
   if (!others && !root)
     return [];

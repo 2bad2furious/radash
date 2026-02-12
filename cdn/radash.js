@@ -236,7 +236,7 @@ var radash = (function (exports) {
     }, {});
     return listA.some((value) => dictB[ident(value)]);
   };
-  const fork = (list2, condition) => {
+  function fork(list2, condition) {
     if (!list2)
       return [[], []];
     return list2.reduce(
@@ -250,7 +250,7 @@ var radash = (function (exports) {
       },
       [[], []]
     );
-  };
+  }
   const merge = (root, others, matcher) => {
     if (!others && !root)
       return [];
